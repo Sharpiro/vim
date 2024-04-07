@@ -1090,13 +1090,14 @@ main(int argc, char *argv[])
 
       if (color)
         {
-          if (hextype == HEX_BITS)
-            c += addrlen + 3 + p*12;
-          else
-            c = addrlen + 3 + (grplen * cols - 1)/octspergrp + p*12;
+        //   if (hextype == HEX_BITS)
+        //     c += addrlen + 3 + p*12;
+        //   else
+            // c = addrlen + 3 + (grplen * cols - 1)/octspergrp + p*12;
+        c = addrlen + 1 + (grplen * cols - 1)/octspergrp;
 
-          if (hextype == HEX_LITTLEENDIAN)
-            c += 1;
+        //   if (hextype == HEX_LITTLEENDIAN)
+        //     c += 1;
 
           COLOR_PROLOGUE
           begin_coloring_char(l,&c,e,ebcdic);
@@ -1108,7 +1109,11 @@ main(int argc, char *argv[])
 #else
           if (ebcdic)
             e = (e < 64) ? '.' : etoa64[e-64];
-          l[c++] = (e > 31 && e < 127) ? e : '.';
+        // @todo: color version
+        //   l[c++] = (e > 31 && e < 127) ? e : '.';
+        //   l[c++] = '.';
+        //   l[c++] = 'a';
+        //   l[c++] = 0;
 #endif
           COLOR_EPILOGUE
           n++;
@@ -1126,14 +1131,18 @@ main(int argc, char *argv[])
           if (ebcdic)
             e = (e < 64) ? '.' : etoa64[e-64];
 
-          c += addrlen + 3 + p;
-          l[c++] =
-#if defined(__MVS__) && __CHARSET_LIB == 0
-              (e >= 64)
-#else
-              (e > 31 && e < 127)
-#endif
-              ? e : '.';
+        // @todo: no color version
+          c += addrlen + 1;
+        //   c += addrlen + 3 + p;
+        //   l[c++] = 'b';
+        //   l[c++] = '.';
+//           l[c++] =
+// #if defined(__MVS__) && __CHARSET_LIB == 0
+//               (e >= 64)
+// #else
+//               (e > 31 && e < 127)
+// #endif
+//               ? e : '.';
           n++;
           if (++p == cols)
             {
