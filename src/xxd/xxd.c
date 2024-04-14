@@ -142,6 +142,7 @@ extern void perror __P((char *));
 # endif
 #endif
 
+// @todo
 char version[] = "xxd DEV";
 #ifdef WIN32
 char osver[] = " (Win32)";
@@ -290,6 +291,7 @@ exit_with_usage(void)
 #endif
   fprintf(stderr, "    -u          use upper case hex letters.\n");
   fprintf(stderr, "    -R when     colorize the output; <when> can be 'always', 'auto' or 'never'. Default: 'auto'.\n"),
+  fprintf(stderr, "    -z          disable ascii column\n");
   fprintf(stderr, "    -v          show version: \"%s%s\".\n", version, osver);
   exit(1);
 }
@@ -664,7 +666,7 @@ main(int argc, char *argv[])
   FILE *fp, *fpo;
   int c, e, p = 0, relseek = 1, negseek = 0, revert = 0, i, x;
   int cols = 0, colsgiven = 0, nonzero = 0, autoskip = 0, hextype = HEX_NORMAL;
-  int capitalize = 0, decimal_offset = 0;
+  int capitalize = 0, decimal_offset = 0, no_ascii = 0;
   int ebcdic = 0;
   int octspergrp = -1;	/* number of octets grouped in output */
   int grplen;		/* total chars per octet group */
@@ -711,6 +713,7 @@ main(int argc, char *argv[])
       else if (!STRNCMP(pp, "-i", 2)) hextype = HEX_CINCLUDE;
       else if (!STRNCMP(pp, "-C", 2)) capitalize = 1;
       else if (!STRNCMP(pp, "-d", 2)) decimal_offset = 1;
+      else if (!STRNCMP(pp, "-z", 2)) no_ascii = 1;
       else if (!STRNCMP(pp, "-r", 2)) revert++;
       else if (!STRNCMP(pp, "-E", 2)) ebcdic++;
       else if (!STRNCMP(pp, "-v", 2))
@@ -1090,14 +1093,20 @@ main(int argc, char *argv[])
 
       if (color)
         {
-        //   if (hextype == HEX_BITS)
-        //     c += addrlen + 3 + p*12;
-        //   else
-            // c = addrlen + 3 + (grplen * cols - 1)/octspergrp + p*12;
-        c = addrlen + 1 + (grplen * cols - 1)/octspergrp;
+          // @todo: color version pt 1
+          if (no_ascii) {
+            c = addrlen + 1 + (grplen * cols - 1)/octspergrp;
+          }
+          else
+          {
+            if (hextype == HEX_BITS)
+              c += addrlen + 3 + p*12;
+            else
+              c = addrlen + 3 + (grplen * cols - 1)/octspergrp + p*12;
 
-        //   if (hextype == HEX_LITTLEENDIAN)
-        //     c += 1;
+            if (hextype == HEX_LITTLEENDIAN)
+              c += 1;
+          }
 
           COLOR_PROLOGUE
           begin_coloring_char(l,&c,e,ebcdic);
@@ -1109,11 +1118,11 @@ main(int argc, char *argv[])
 #else
           if (ebcdic)
             e = (e < 64) ? '.' : etoa64[e-64];
-        // @todo: color version
-        //   l[c++] = (e > 31 && e < 127) ? e : '.';
-        //   l[c++] = '.';
-        //   l[c++] = 'a';
-        //   l[c++] = 0;
+          // @todo: color version pt 2
+          if (!no_ascii)
+          {
+            l[c++] = (e > 31 && e < 127) ? e : '.';
+          }
 #endif
           COLOR_EPILOGUE
           n++;
@@ -1132,17 +1141,21 @@ main(int argc, char *argv[])
             e = (e < 64) ? '.' : etoa64[e-64];
 
         // @todo: no color version
-          c += addrlen + 1;
-        //   c += addrlen + 3 + p;
-        //   l[c++] = 'b';
-        //   l[c++] = '.';
-//           l[c++] =
-// #if defined(__MVS__) && __CHARSET_LIB == 0
-//               (e >= 64)
-// #else
-//               (e > 31 && e < 127)
-// #endif
-//               ? e : '.';
+          if (no_ascii)
+          {
+            c += addrlen + 1;
+          } 
+          else 
+          {
+            c += addrlen + 3 + p;
+            l[c++] =
+#if defined(__MVS__) && __CHARSET_LIB == 0
+                (e >= 64)
+#else
+                (e > 31 && e < 127)
+#endif
+                ? e : '.';
+          }
           n++;
           if (++p == cols)
             {
