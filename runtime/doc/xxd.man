@@ -107,6 +107,9 @@ OPTIONS
               always, or auto.  When the  $NO_COLOR  environment  variable  is
               set, colorization will be disabled.
 
+       -z
+              Disable ASCII column.
+
        -seek offset
               When used after -r: revert with <offset> added to file positions
               found in hex dump.

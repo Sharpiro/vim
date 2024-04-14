@@ -291,7 +291,7 @@ exit_with_usage(void)
 #endif
   fprintf(stderr, "    -u          use upper case hex letters.\n");
   fprintf(stderr, "    -R when     colorize the output; <when> can be 'always', 'auto' or 'never'. Default: 'auto'.\n"),
-  fprintf(stderr, "    -z          disable ascii column\n");
+  fprintf(stderr, "    -z          disable ASCII column.\n");
   fprintf(stderr, "    -v          show version: \"%s%s\".\n", version, osver);
   exit(1);
 }
@@ -1094,9 +1094,8 @@ main(int argc, char *argv[])
       if (color)
         {
           // @todo: color version pt 1
-          if (no_ascii) {
+          if (no_ascii)
             c = addrlen + 1 + (grplen * cols - 1)/octspergrp;
-          }
           else
           {
             if (hextype == HEX_BITS)
@@ -1120,9 +1119,7 @@ main(int argc, char *argv[])
             e = (e < 64) ? '.' : etoa64[e-64];
           // @todo: color version pt 2
           if (!no_ascii)
-          {
             l[c++] = (e > 31 && e < 127) ? e : '.';
-          }
 #endif
           COLOR_EPILOGUE
           n++;
@@ -1142,9 +1139,7 @@ main(int argc, char *argv[])
 
         // @todo: no color version
           if (no_ascii)
-          {
             c += addrlen + 1;
-          } 
           else 
           {
             c += addrlen + 3 + p;
