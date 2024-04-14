@@ -143,7 +143,7 @@ extern void perror __P((char *));
 #endif
 
 // @todo
-char version[] = "xxd DEV";
+char version[] = "xxd 2024-02-10 by Juergen Weigert et al.";
 #ifdef WIN32
 char osver[] = " (Win32)";
 #else
@@ -1140,7 +1140,7 @@ main(int argc, char *argv[])
         // @todo: no color version
           if (no_ascii)
             c += addrlen + 1;
-          else 
+          else
           {
             c += addrlen + 3 + p;
             l[c++] =
@@ -1216,3 +1216,5 @@ main(int argc, char *argv[])
 }
 
 /* vi:set ts=8 sw=4 sts=2 cino+={2 cino+=n-2 : */
+
+// @todo: bash autocomplete

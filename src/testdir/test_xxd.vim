@@ -641,3 +641,17 @@ func Test_xxd_color2()
   unlet! $PS1
 endfunc
 " vim: shiftwidth=2 sts=2 expandtab
+
+func Test_xxd_no_ascii()
+  enew!
+  call writefile(["ABCDEF"], 'Xxdin', 'D')
+  exe 'r! ' .. s:xxd_cmd .. ' -e -c6 ' .. ' Xxdin'
+  call assert_equal('00000000: 44434241     4645   ABCDEF', getline(2))
+
+  enew!
+  call writefile(["ABCDEFGHI"], 'Xxdin', 'D')
+  exe 'r! ' .. s:xxd_cmd .. ' -e -c9 ' .. ' Xxdin'
+  call assert_equal('00000000: 44434241 48474645       49   ABCDEFGHI', getline(2))
+
+  bwipe!
+endfunc
