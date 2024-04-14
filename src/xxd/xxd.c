@@ -142,7 +142,7 @@ extern void perror __P((char *));
 # endif
 #endif
 
-char version[] = "xxd 2024-02-10 by Juergen Weigert et al.";
+char version[] = "xxd DEV";
 #ifdef WIN32
 char osver[] = " (Win32)";
 #else
