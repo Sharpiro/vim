@@ -142,7 +142,6 @@ extern void perror __P((char *));
 # endif
 #endif
 
-// @todo
 char version[] = "xxd 2024-02-10 by Juergen Weigert et al.";
 #ifdef WIN32
 char osver[] = " (Win32)";
@@ -1164,6 +1163,21 @@ main(int argc, char *argv[])
     }
   if (p)
     {
+      if (no_ascii)
+      {
+        int max_group_count = cols % octspergrp == 0 
+          ? cols / octspergrp
+          : cols / octspergrp + 1;
+        int max_spaces = max_group_count - 1;
+        int max_length = cols * 2 + max_spaces;
+
+        int group_count = p % octspergrp == 0 ? p / octspergrp : p / octspergrp + 1;
+        int space_count = group_count - 1;
+        int used_count = p * 2 + space_count;
+        int unused_count = max_length - used_count;
+        c -= unused_count;
+      }
+
       l[c++] = '\n';
       l[c] = '\0';
       if (color)

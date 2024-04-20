@@ -269,6 +269,45 @@ func Test_xxd()
   endfor
 
 
+  " Test 19: @todo
+  call writefile(['TESTabcd09'], 'XXDfile')
+  let s:test += 1
+  exe '%!' . s:xxd_cmd . ' -z %'
+  let expected = ['00000000: 5445 5354 6162 6364 3039 0a']
+  call assert_equal(expected, getline(1,'$'), s:Mess(s:test))
+
+
+  " Test 20: @todo
+  call writefile(['TESTabcd09', 'TESTabcd09'], 'XXDfile')
+  let s:test += 1
+  exe '%!' . s:xxd_cmd . ' -z %'
+  let expected = [
+        \ '00000000: 5445 5354 6162 6364 3039 0a54 4553 5461',
+        \ '00000010: 6263 6430 390a']
+  call assert_equal(expected, getline(1,'$'), s:Mess(s:test))
+
+
+  " Test 21: @todo
+  call writefile(['TESTabcd09', 'TESTabcd09'], 'XXDfile')
+  let s:test += 1
+  exe '%!' . s:xxd_cmd . ' -z -g 3 %'
+  let expected = [
+        \ '00000000: 544553 546162 636430 390a54 455354 61',
+        \ '00000010: 626364 30390a']
+  call assert_equal(expected, getline(1,'$'), s:Mess(s:test))
+
+
+  " Test 22: @todo
+  call writefile(['TESTabcd09', 'TESTabcd09'], 'XXDfile')
+  let s:test += 1
+  exe '%!' . s:xxd_cmd . ' -z -c 8 -g 4 %'
+  let expected = [
+        \ '00000000: 54455354 61626364',
+        \ '00000008: 30390a54 45535461',
+        \ '00000010: 62636430 390a']
+  call assert_equal(expected, getline(1,'$'), s:Mess(s:test))
+
+
   %d
   bwipe!
   call delete('XXDfile')
@@ -641,17 +680,3 @@ func Test_xxd_color2()
   unlet! $PS1
 endfunc
 " vim: shiftwidth=2 sts=2 expandtab
-
-func Test_xxd_no_ascii()
-  enew!
-  call writefile(["ABCDEF"], 'Xxdin', 'D')
-  exe 'r! ' .. s:xxd_cmd .. ' -e -c6 ' .. ' Xxdin'
-  call assert_equal('00000000: 44434241     4645   ABCDEF', getline(2))
-
-  enew!
-  call writefile(["ABCDEFGHI"], 'Xxdin', 'D')
-  exe 'r! ' .. s:xxd_cmd .. ' -e -c9 ' .. ' Xxdin'
-  call assert_equal('00000000: 44434241 48474645       49   ABCDEFGHI', getline(2))
-
-  bwipe!
-endfunc
