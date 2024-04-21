@@ -1165,7 +1165,7 @@ main(int argc, char *argv[])
     {
       if (no_ascii)
       {
-        int max_group_count = cols % octspergrp == 0 
+        int max_group_count = cols % octspergrp == 0
           ? cols / octspergrp
           : cols / octspergrp + 1;
         int max_spaces = max_group_count - 1;
