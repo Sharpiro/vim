@@ -498,6 +498,16 @@ func Test_xxd_little_endian_with_cols()
   exe 'r! ' .. s:xxd_cmd .. ' -e -c9 ' .. ' Xxdin'
   call assert_equal('00000000: 44434241 48474645       49   ABCDEFGHI', getline(2))
 
+  enew!
+  call writefile(["ABCDEF"], 'Xxdin', 'D')
+  exe 'r! ' .. s:xxd_cmd .. ' -e -c6 -z ' .. ' Xxdin'
+  call assert_equal('00000000: 44434241     4645 ', getline(2))
+
+  enew!
+  call writefile(["ABCDEFGHI"], 'Xxdin', 'D')
+  exe 'r! ' .. s:xxd_cmd .. ' -e -c9 -z ' .. ' Xxdin'
+  call assert_equal('00000000: 44434241 48474645       49 ', getline(2))
+
   bwipe!
 endfunc
 

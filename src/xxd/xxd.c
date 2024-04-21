@@ -1168,12 +1168,17 @@ main(int argc, char *argv[])
         int max_group_count = cols % octspergrp == 0
           ? cols / octspergrp
           : cols / octspergrp + 1;
-        int max_spaces = max_group_count - 1;
+        int max_spaces = hextype == HEX_LITTLEENDIAN
+          ? max_group_count
+          : max_group_count - 1;
         int max_length = cols * 2 + max_spaces;
 
         int group_count = p % octspergrp == 0 ? p / octspergrp : p / octspergrp + 1;
         int space_count = group_count - 1;
-        int used_count = p * 2 + space_count;
+        int bytes_text_length = hextype == HEX_LITTLEENDIAN
+          ? group_count * octspergrp * 2
+          : p * 2;
+        int used_count = bytes_text_length + space_count;
         int unused_count = max_length - used_count;
         c -= unused_count;
       }
